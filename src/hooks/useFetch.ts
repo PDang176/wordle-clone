@@ -1,17 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export const useFetch = <T>(url: URL) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isMountedRef = useRef(false);
+
   useEffect(() => {
     const fetchData = async () => {
-      console.log("hello");
       setLoading(true);
       try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error(response.statusText);
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
         const json = await response.json();
         setLoading(false);
         setData(json);
@@ -22,9 +26,10 @@ export const useFetch = <T>(url: URL) => {
       }
     };
 
-    console.log("hello");
-
-    fetchData();
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      fetchData();
+    }
   }, [url]);
   return { data, loading, error };
 };
