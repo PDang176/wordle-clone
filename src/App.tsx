@@ -1,4 +1,6 @@
+import { useState } from "react";
 import "./App.css";
+import Board from "./components/Board";
 import { useFetch } from "./hooks/useFetch";
 
 const URL_WORD = new URL("https://random-word-api.herokuapp.com/word?length=5");
@@ -10,11 +12,12 @@ const App = () => {
     error,
   } = useFetch<string>(URL_WORD);
 
+  const [words, setWords] = useState<string[]>(new Array(6).fill(null));
+
   return (
-    <>
-      {!wordIsLoading ? <div>{word}</div> : <div>Word is Loading</div>}
-      {error ? { error } : ""}
-    </>
+    <div>
+      <Board words={words} />
+    </div>
   );
 };
 
